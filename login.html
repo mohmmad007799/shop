@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول - المتجر</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma, Arial,sans-serif;}
+body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;justify-content:center;align-items:center;height:100vh;color:#fff;}
+
+.container{
+  background:rgba(255,255,255,.1);
+  padding:30px;
+  border-radius:20px;
+  width:320px;
+  backdrop-filter:blur(10px);
+  text-align:center;
+}
+
+h2{margin-bottom:20px;color:#00ffcc;}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  border:none;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#00ffcc;
+  color:#000;
+  font-weight:bold;
+  transition:.2s;
+}
+
+button:hover{background:#00c3ff;}
+
+.toggle{
+  margin-top:15px;
+  cursor:pointer;
+  color:#00c3ff;
+  text-decoration:underline;
+  font-size:14px;
+}
+
+/* ====== MODAL ====== */
+#successModal{
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.5);
+  z-index:100;
+}
+#successModal .modal-content{
+  background:#fff;
+  padding:30px 20px;
+  border-radius:15px;
+  text-align:center;
+  max-width:300px;
+  width:90%;
+  color:#000;
+}
+#successModal .modal-content .circle{
+  width:60px;
+  height:60px;
+  background:#27ae60;
+  border-radius:50%;
+  margin:0 auto 15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  color:#fff;
+}
+#successModal button{
+  background:#00ffcc;
+  color:#000;
+  border:none;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:10px;
+  font-weight:bold;
+}
+#successModal button:hover{background:#00c3ff;}
+
+.error{color:#ff4d4d;font-size:13px;margin-top:5px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>تسجيل الدخول</h2>
+  <div id="formError" class="error"></div>
+
+  <input type="text" id="username" placeholder="اسم المستخدم" required>
+  <input type="password" id="password" placeholder="كلمة المرور" required>
+
+  <button id="loginBtn">تسجيل الدخول</button>
+  <div class="toggle" onclick="window.location.href='register.html'">ليس لديك حساب؟ إنشاء حساب</div>
+</div>
+
+<!-- MODAL SUCCESS -->
+<div id="successModal">
+  <div class="modal-content">
+    <div class="circle">✔</div>
+    <p id="modalText">تم تسجيل الدخول بنجاح!</p>
+    <button onclick="confirmModal()">تأكيد</button>
+  </div>
+</div>
+
+<script>
+// ---------- المخزن ----------
+const USERS_KEY = "APP_USERS";
+
+// ---------- وظائف ----------
+function loadUsers(){return JSON.parse(localStorage.getItem(USERS_KEY)||"[]");}
+function saveCurrentUser(user){localStorage.setItem("CURRENT_USER",JSON.stringify(user));}
+
+const loginBtn = document.getElementById("loginBtn");
+const formError = document.getElementById("formError");
+const successModal = document.getElementById("successModal");
+const modalText = document.getElementById("modalText");
+
+loginBtn.addEventListener("click", ()=>{
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  if(!username||!password){formError.textContent="الرجاء ملء جميع الحقول";return;}
+
+  const users = loadUsers();
+  const user = users.find(u=>u.username===username && u.password===password);
+  if(user){
+    saveCurrentUser(user);
+    formError.textContent="";
+    modalText.textContent = "تم تسجيل الدخول بنجاح!";
+    successModal.style.display = "flex";
+  } else {
+    formError.textContent="اسم المستخدم أو كلمة المرور غير صحيحة";
+  }
+});
+
+function confirmModal(){
+  successModal.style.display = "none";
+  window.location.href = "index.html"; // تحويل للصفحة الرئيسية
+}
+</script>
+
+</body>
+</html>

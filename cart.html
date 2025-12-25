@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيقك الرقمي | السلة</title>
+
+<style>
+/* ===== RESET ===== */
+*{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma, Arial}
+
+/* ===== BODY ===== */
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+  padding-bottom:90px;
+  user-select:none;
+}
+button,a{user-select:auto}
+img{-webkit-user-drag:none}
+
+/* ===== HEADER ===== */
+header.top{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:15px 18px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.2);
+}
+header.top img{
+  width:40px;height:40px;border-radius:10px
+}
+header.top h1{
+  flex:1;
+  font-size:18px;
+  text-align:center;
+}
+
+/* ===== TABS ===== */
+.tabs{
+  display:flex;
+  gap:10px;
+  padding:12px;
+}
+.tabs button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  background:rgba(255,255,255,.18);
+  color:#fff;
+  font-weight:bold;
+}
+.tabs button.active{
+  background:linear-gradient(90deg,#00ffcc,#00c3ff);
+  color:#000;
+}
+
+/* ===== CONTAINER ===== */
+.container{padding:15px}
+
+/* ===== CARD ===== */
+.card{
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(16px);
+  border-radius:18px;
+  padding:10px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+.card img{
+  width:80px;height:80px;
+  border-radius:12px;
+  object-fit:cover;
+  cursor:pointer;
+}
+.info{flex:1;cursor:pointer}
+.info h4{font-size:14px;margin-bottom:3px}
+.info p{font-size:12px;color:rgba(255,255,255,.8)}
+.price{font-size:13px;font-weight:bold;color:#00ffcc}
+
+/* ===== BUTTONS ===== */
+.actions{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.actions button{
+  padding:6px 10px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:12px;
+}
+.buy{background:linear-gradient(90deg,#ffb347,#ffcc33);color:#000}
+.delete{background:linear-gradient(90deg,#ff4e50,#f00000);color:#fff}
+
+/* ===== SUMMARY ===== */
+.summary{
+  margin-top:15px;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(16px);
+  border-radius:18px;
+  padding:12px;
+}
+.summary div{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+.summary strong{color:#00ffcc}
+
+/* ===== EMPTY ===== */
+.empty{
+  text-align:center;
+  opacity:.8;
+  padding:30px 0;
+}
+
+/* ===== BOTTOM NAV ===== */
+nav.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(12px);
+  display:flex;
+  justify-content:space-around;
+  padding:7px 0;
+  z-index:1000;
+}
+nav.bottom a{
+  color:#fff;
+  font-size:18px;
+  text-decoration:none;
+  opacity:.85;
+}
+nav.bottom a:hover{opacity:1;transform:scale(1.15)}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+  <img src="Screenshot 2025-04-22 090937.png">
+  <h1>سلة المشتريات</h1>
+</header>
+
+<div class="tabs">
+  <button id="cartTab" class="active">🛒 السلة</button>
+  <button id="libraryTab">📦 مشترياتي</button>
+</div>
+
+<div class="container" id="content"></div>
+
+<nav class="bottom">
+  <a href="index.html">🏠</a>
+  <a href="add-product.html">➕</a>
+  <a href="cart.html">🛒</a>
+  <a href="profile.html">👤</a>
+</nav>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")||"[]");
+let purchases = JSON.parse(localStorage.getItem("purchases")||"[]");
+
+const cartTab=document.getElementById("cartTab");
+const libraryTab=document.getElementById("libraryTab");
+const content=document.getElementById("content");
+
+function save(){
+ localStorage.setItem("cart",JSON.stringify(cart));
+ localStorage.setItem("purchases",JSON.stringify(purchases));
+}
+
+/* ===== CART ===== */
+function renderCart(){
+ content.innerHTML="";
+ if(cart.length===0){
+  content.innerHTML='<div class="empty">🛒 السلة فارغة</div>';
+  return;
+ }
+ let total=0;
+
+ cart.forEach((p,i)=>{
+  const qty=p.qty||1;
+  const sum=p.price*qty;
+  total+=sum;
+
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`
+    <img src="${p.img}">
+    <div class="info">
+      <h4>${p.name}</h4>
+      <p>${p.desc}</p>
+      <div class="price">${p.price}$ × ${qty} = ${sum}$</div>
+    </div>
+    <div class="actions">
+      <button class="buy">شراء</button>
+      <button class="delete">حذف</button>
+    </div>
+  `;
+
+  card.querySelector("img").onclick =
+  card.querySelector(".info").onclick =
+   ()=>location.href=`product.html?id=${p.id}`;
+
+  card.querySelector(".buy").onclick=()=>{
+    purchases.push(p);
+    cart.splice(i,1);
+    save();
+    renderCart();
+  };
+
+  card.querySelector(".delete").onclick=()=>{
+    if(confirm("حذف المنتج؟")){
+      cart.splice(i,1);
+      save();
+      renderCart();
+    }
+  };
+
+  content.appendChild(card);
+ });
+
+ const summary=document.createElement("div");
+ summary.className="summary";
+ summary.innerHTML=`
+  <div><span>عدد المنتجات</span><strong>${cart.length}</strong></div>
+  <div><span>الإجمالي</span><strong>${total}$</strong></div>
+ `;
+ content.appendChild(summary);
+}
+
+/* ===== LIBRARY ===== */
+function renderLibrary(){
+ content.innerHTML="";
+ if(purchases.length===0){
+  content.innerHTML='<div class="empty">📦 لا توجد مشتريات</div>';
+  return;
+ }
+
+ purchases.forEach(p=>{
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`
+    <img src="${p.img}">
+    <div class="info">
+      <h4>${p.name}</h4>
+      <p>${p.desc}</p>
+      <div class="price">${p.price}$</div>
+    </div>
+  `;
+  card.onclick=()=>location.href=`product.html?id=${p.id}`;
+  content.appendChild(card);
+ });
+}
+
+/* ===== TABS ===== */
+cartTab.onclick=()=>{
+ cartTab.classList.add("active");
+ libraryTab.classList.remove("active");
+ renderCart();
+};
+libraryTab.onclick=()=>{
+ libraryTab.classList.add("active");
+ cartTab.classList.remove("active");
+ renderLibrary();
+};
+
+renderCart();
+</script>
+
+</body>
+</html>

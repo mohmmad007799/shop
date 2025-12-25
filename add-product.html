@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إضافة منتج</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma, Arial}
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#00ffcc;
+  padding-bottom:80px;
+}
+
+/* ================= HEADER ================= */
+header.top{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:15px 20px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+header.top h3{margin:0;font-weight:bold;}
+header.top img{width:38px;height:38px;border-radius:8px;}
+
+/* ================= CONTAINER ================= */
+.container{
+  max-width:900px;
+  margin:20px auto;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(15px);
+  padding:20px;
+  border-radius:22px;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+/* ================= FILE DROP ================= */
+.file-drop{
+  flex:1 1 250px;
+  min-width:250px;
+  border:2px dashed #00ffcc;
+  border-radius:14px;
+  padding:25px;
+  text-align:center;
+  color:#00ffcc;
+  cursor:pointer;
+  transition:.25s;
+}
+.file-drop:hover{
+  background:rgba(0,255,204,.08);
+}
+.file-drop.success{
+  background:rgba(0,255,204,.12);
+  border-color:#00c3ff;
+  color:#00c3ff;
+}
+
+/* ================= DETAILS ================= */
+.details{
+  flex:2 1 400px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* ================= INPUTS & TEXTAREAS ================= */
+.details input,
+.details textarea{
+  width:100%;
+  padding:11px 14px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  font-size:14px;
+
+  /* ====== هنا لون الخلفية والنص ====== */
+  background:#90ffe9;   /* لون الخلفية */
+  color:#404040;        /* لون النص */
+}
+
+/* تحسين التركيز على الخانات */
+.details input:focus,
+.details textarea:focus{
+  outline:2px solid #00ffcc; /* تباين مع الأبيض */
+}
+
+/* textarea حجمها */
+.details textarea{
+  resize:none;
+  height:80px;
+}
+
+/* ================= BUTTON ================= */
+button.primary{
+  background:linear-gradient(90deg,#00ffcc,#00c3ff);
+  color:#000;
+  border:none;
+  padding:12px;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  transition:.25s;
+}
+button.primary:hover{opacity:.9;}
+
+/* ================= SUCCESS MODAL ================= */
+#successModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,.6);
+  z-index:2000;
+}
+#successModal .modal-content{
+  background:#fff;
+  color:#000;
+  padding:30px 20px;
+  border-radius:20px;
+  text-align:center;
+  max-width:300px;
+  width:90%;
+}
+#successModal .circle{
+  width:60px;
+  height:60px;
+  background:#00c3ff;
+  border-radius:50%;
+  margin:0 auto 15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  color:#fff;
+}
+#successModal button{
+  background:#00ffcc;
+  color:#000;
+  border:none;
+  padding:10px 15px;
+  border-radius:10px;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+/* ================= BOTTOM BAR ================= */
+.bottom-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(10px);
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0; /* ارتفاع الشريط */
+}
+.bottom-bar a{
+  color:#fff;
+  text-decoration:none;
+  opacity:.85;
+  font-size:18px;
+}
+
+@media(max-width:768px){
+  .container{flex-direction:column;}
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+  <h3>تطبيقك الرقمي</h3>
+  <img src="https://via.placeholder.com/40">
+</header>
+
+<form class="container" id="addForm">
+
+  <!-- صورة خلفية المنتج -->
+  <div class="file-drop" id="backgroundDrop">
+    اسحب صورة خلفية المنتج هنا أو اضغط للاختيار
+  </div>
+  <input type="file" id="backgroundInput" accept="image/*" hidden>
+
+  <!-- تفاصيل المنتج -->
+  <div class="details">
+    <div class="file-drop" id="productDrop">
+      اسحب ملف المنتج (ملف، صورة أو فيديو) أو اضغط للاختيار
+    </div>
+    <input type="file" id="productInput" accept="image/*,video/*,application/*" hidden>
+
+    <input id="pname" placeholder="اسم المنتج" required maxlength="50">
+    <textarea id="pdesc" placeholder="وصف مختصر (حتى 50 حرف)" maxlength="50"></textarea>
+    <textarea id="ptext" placeholder="النص الأساسي للمنتج (حتى 120 حرف)" maxlength="120"></textarea>
+    <input id="pprice" type="number" placeholder="السعر" required>
+
+    <button class="primary" type="submit">نشر المنتج</button>
+  </div>
+</form>
+
+<!-- مودال النجاح -->
+<div id="successModal">
+  <div class="modal-content">
+    <div class="circle">✔</div>
+    <p>تم تحميل المنتج</p>
+    <button onclick="closeModal()">تأكيد</button>
+  </div>
+</div>
+
+<!-- الشريط السفلي -->
+<div class="bottom-bar">
+  <a href="index.html">🏠</a>
+  <a href="add-product.html">➕</a>
+  <a href="cart.html">🛒</a>
+  <a href="profile.html">👤</a>
+</div>
+
+<script>
+const STORE_KEY="APP_PRODUCTS";
+function loadStore(){
+  const data=JSON.parse(localStorage.getItem(STORE_KEY));
+  if(!data) return {products:[]};
+  return data;
+}
+function saveStore(data){localStorage.setItem(STORE_KEY,JSON.stringify(data));}
+let store=loadStore();
+
+// دالة إضافة المنتج
+function addProduct(product){
+  product.id=Date.now();
+  store.products.push(product);
+  saveStore(store);
+}
+
+// عناصر رفع الملفات
+const backgroundDrop=document.getElementById("backgroundDrop");
+const backgroundInput=document.getElementById("backgroundInput");
+const productDrop=document.getElementById("productDrop");
+const productInput=document.getElementById("productInput");
+const pname=document.getElementById("pname");
+const pdesc=document.getElementById("pdesc");
+const ptext=document.getElementById("ptext");
+const pprice=document.getElementById("pprice");
+const addForm=document.getElementById("addForm");
+const successModal=document.getElementById("successModal");
+
+backgroundDrop.onclick=()=>backgroundInput.click();
+backgroundDrop.ondragover=e=>e.preventDefault();
+backgroundDrop.ondrop=e=>{
+  e.preventDefault();
+  backgroundInput.files=e.dataTransfer.files;
+  validateBackgroundImage();
+};
+backgroundInput.onchange=validateBackgroundImage;
+
+function validateBackgroundImage(){
+  const file=backgroundInput.files[0];
+  if(!file || !file.type.startsWith("image/")){
+    backgroundDrop.textContent="اسحب صورة خلفية المنتج هنا أو اضغط للاختيار";
+    backgroundDrop.classList.remove("success");
+    return;
+  }
+  backgroundDrop.textContent="تم تحميل الخلفية ✅";
+  backgroundDrop.classList.add("success");
+}
+
+productDrop.onclick=()=>productInput.click();
+productDrop.ondragover=e=>e.preventDefault();
+productDrop.ondrop=e=>{
+  e.preventDefault();
+  productInput.files=e.dataTransfer.files;
+  validateProductFile();
+};
+productInput.onchange=validateProductFile;
+
+function validateProductFile(){
+  const file=productInput.files[0];
+  if(!file){
+    productDrop.textContent="اسحب ملف المنتج هنا أو اضغط للاختيار";
+    productDrop.classList.remove("success");
+    return;
+  }
+  productDrop.textContent="تم تحميل الملف ✅";
+  productDrop.classList.add("success");
+}
+
+// نشر المنتج
+addForm.onsubmit=e=>{
+  e.preventDefault();
+  if(!pname.value || !pprice.value || !pdesc.value || !ptext.value || !productInput.files[0] || !backgroundInput.files[0]){
+    alert("يجب ملء جميع الحقول واختيار صورة الخلفية وملف المنتج!");
+    return;
+  }
+  addProduct({
+    name:pname.value,
+    desc:pdesc.value+" "+ptext.value,
+    price:Number(pprice.value),
+    image:URL.createObjectURL(productInput.files[0]),
+    owner:"user123"
+  });
+  successModal.style.display="flex";
+};
+
+// إغلاق مودال النجاح
+function closeModal(){
+  successModal.style.display="none";
+  addForm.reset();
+  backgroundDrop.textContent="اسحب صورة خلفية المنتج هنا أو اضغط للاختيار";
+  backgroundDrop.classList.remove("success");
+  productDrop.textContent="اسحب ملف المنتج هنا أو اضغط للاختيار";
+  productDrop.classList.remove("success");
+}
+</script>
+
+</body>
+</html>

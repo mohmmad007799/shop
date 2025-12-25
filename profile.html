@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الملف الشخصي</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Tahoma, Arial
+}
+
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+  padding-bottom:80px;
+}
+
+/* ====== Header ====== */
+.top-bar{
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  padding:15px 20px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);
+  position:relative;
+  z-index:1000;
+}
+
+.burger{
+  font-size:26px;
+  cursor:pointer;
+}
+
+/* ====== Burger Menu (Overlay فوق كل شي) ====== */
+.menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  z-index:9998;
+}
+
+.menu{
+  position:fixed;
+  top:70px;
+  right:20px;
+  background:rgba(0,0,0,.9);
+  border-radius:16px;
+  overflow:hidden;
+  min-width:220px;
+  display:none;
+  z-index:9999;
+}
+
+.menu button{
+  width:100%;
+  padding:14px;
+  background:none;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  text-align:right;
+  font-size:14px;
+}
+
+.menu button:hover{
+  background:rgba(255,255,255,.15);
+}
+
+/* ====== Profile Card ====== */
+.profile-card{
+  margin:20px;
+  padding:25px;
+  border-radius:22px;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(15px);
+  text-align:center;
+}
+
+.avatar img{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #fff;
+}
+
+.email{
+  opacity:.8;
+  margin:10px 0 20px;
+}
+
+/* ====== Stats ====== */
+.stats{
+  display:flex;
+  justify-content:space-around;
+  margin:20px 0;
+}
+
+.stats div span{
+  font-size:22px;
+  font-weight:bold;
+  display:block;
+}
+
+.stats small{opacity:.8}
+
+/* ====== Progress ====== */
+.progress-box{
+  margin-top:20px;
+  text-align:right;
+}
+
+.progress{
+  width:100%;
+  height:12px;
+  background:#555;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00ffcc,#00c3ff);
+  transition:.7s;
+}
+
+/* ====== Products ====== */
+.products{margin:20px}
+.products h3{margin-bottom:10px}
+
+.product{
+  display:flex;
+  gap:12px;
+  background:rgba(255,255,255,.15);
+  padding:12px;
+  border-radius:14px;
+  margin-bottom:10px;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.product img{
+  width:60px;
+  height:60px;
+  border-radius:10px;
+  object-fit:cover;
+}
+
+.product-details h4{margin-bottom:4px}
+.product-details p{margin:0}
+
+.delete-btn{
+  background:#ff4d4d;
+  color:#fff;
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* ====== Empty ====== */
+.empty{
+  opacity:.7;
+  text-align:center;
+  margin-top:15px;
+}
+
+/* ====== Modal ====== */
+#deleteModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,.5);
+  z-index:9997;
+}
+
+#deleteModal .modal-content{
+  background:#fff;
+  color:#000;
+  padding:20px 30px;
+  border-radius:15px;
+  text-align:center;
+}
+
+#deleteModal button{
+  padding:8px 15px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  margin:5px;
+}
+.yes{background:#ff4d4d;color:#fff}
+.no{background:#2ecc71;color:#fff}
+
+/* ====== Bottom Bar (لم يُمس) ====== */
+.bottom-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(10px);
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+}
+.bottom-bar span{
+  opacity:.85;
+}
+</style>
+</head>
+
+<body>
+
+<header class="top-bar">
+  <div class="burger" onclick="toggleMenu()">☰</div>
+</header>
+
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+<div class="menu" id="menu">
+  <button onclick="logout()">تسجيل الخروج</button>
+  <button onclick="changeImage()">تعديل صورة الملف الشخصي</button>
+  <button onclick="editName()">تعديل الاسم الشخصي</button>
+</div>
+
+<section class="profile-card">
+  <div class="avatar">
+    <img id="profileImg">
+    <input type="file" id="imgInput" accept="image/*" hidden>
+  </div>
+  <br>
+  <h3 id="username">اسم المستخدم</h3>
+  <br>
+
+  <div class="stats">
+    <div><span id="products">0</span><small>المنتجات</small></div>
+    <div><span id="sales">0$</span><small>المبيعات</small></div>
+    <div><span>⭐ 4.8</span><small>التقييم</small></div>
+  </div>
+
+  <div class="progress-box">
+    <p>اكمل بيع 100$ لتفعيل مزايا إضافية</p>
+    <div class="progress">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</section>
+
+<section class="products">
+  <h3>منتجاتي</h3>
+  <div id="productsContainer"></div>
+</section>
+
+<div id="deleteModal">
+  <div class="modal-content">
+    <p>هل أنت متأكد من حذف هذا المنتج؟</p>
+    <button class="yes" id="confirmDelete">نعم</button>
+    <button class="no" onclick="closeDeleteModal()">لا</button>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <a href="index.html">🏠</a>
+  <a href="add-product.html">➕</a>
+  <a href="cart.html">🛒</a>
+  <a href="profile.html">👤</a>
+</div>
+
+<script>
+const STORE_KEY="APP_PRODUCTS";
+
+/* ====== Store ====== */
+function loadStore(){
+  const data=JSON.parse(localStorage.getItem(STORE_KEY));
+  if(!data) return {
+    profile:{
+      avatar:"https://i.imgur.com/6VBx3io.png",
+      name:"اسم المستخدم"
+    },
+    products:[]
+  };
+  return data;
+}
+function saveStore(data){
+  localStorage.setItem(STORE_KEY,JSON.stringify(data));
+}
+const store=loadStore();
+
+/* ====== Menu ====== */
+function toggleMenu(){
+  document.getElementById("menu").style.display="block";
+  document.getElementById("menuOverlay").style.display="block";
+}
+function closeMenu(){
+  document.getElementById("menu").style.display="none";
+  document.getElementById("menuOverlay").style.display="none";
+}
+
+/* ====== Profile ====== */
+const profileImg=document.getElementById("profileImg");
+const username=document.getElementById("username");
+
+profileImg.src=store.profile.avatar;
+username.textContent=store.profile.name;
+
+/* ====== Edit Image ====== */
+function changeImage(){
+  closeMenu();
+  document.getElementById("imgInput").click();
+}
+document.getElementById("imgInput").addEventListener("change",e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    store.profile.avatar=reader.result;
+    saveStore(store);
+    profileImg.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+/* ====== Edit Name ====== */
+function editName(){
+  closeMenu();
+  const newName=prompt("أدخل الاسم الجديد",store.profile.name);
+  if(!newName) return;
+  store.profile.name=newName;
+  saveStore(store);
+  username.textContent=newName;
+}
+
+/* ====== Logout ====== */
+function logout(){
+  closeMenu();
+  alert("تم تسجيل الخروج");
+}
+
+/* ====== Products ====== */
+const productsContainer=document.getElementById("productsContainer");
+const productsCount=document.getElementById("products");
+const salesSpan=document.getElementById("sales");
+const progressFill=document.getElementById("progressFill");
+
+let selectedProductId=null;
+
+function displayProducts(){
+  productsContainer.innerHTML="";
+  let total=0;
+  const products=store.products.filter(p=>p.owner==="user123");
+
+  if(products.length===0){
+    productsContainer.innerHTML="<p class='empty'>لا يوجد منتجات بعد</p>";
+  }
+
+  products.forEach(p=>{
+    total+=p.price;
+    const div=document.createElement("div");
+    div.className="product";
+    div.innerHTML=`
+      <img src="${p.image}">
+      <div class="product-details">
+        <h4>${p.name}</h4>
+        <p>السعر: ${p.price}$</p>
+      </div>
+      <button class="delete-btn" onclick="openDeleteModal(${p.id})">حذف</button>
+    `;
+    productsContainer.appendChild(div);
+  });
+
+  productsCount.textContent=products.length;
+  salesSpan.textContent=total+"$";
+  progressFill.style.width=Math.min(total,100)+"%";
+}
+
+/* ====== Delete ====== */
+const deleteModal=document.getElementById("deleteModal");
+const confirmDeleteBtn=document.getElementById("confirmDelete");
+
+function openDeleteModal(id){
+  selectedProductId=id;
+  deleteModal.style.display="flex";
+}
+function closeDeleteModal(){
+  deleteModal.style.display="none";
+  selectedProductId=null;
+}
+confirmDeleteBtn.onclick=()=>{
+  store.products=store.products.filter(p=>p.id!==selectedProductId);
+  saveStore(store);
+  displayProducts();
+  closeDeleteModal();
+};
+
+displayProducts();
+</script>
+
+</body>
+</html>
