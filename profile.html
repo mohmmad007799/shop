@@ -6,20 +6,14 @@
 <title>الملف الشخصي</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Tahoma, Arial
-}
-
+*{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma, Arial,sans-serif;}
 body{
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:#fff;
   padding-bottom:80px;
 }
 
-/* ====== Header ====== */
+/* ===== Header ===== */
 .top-bar{
   display:flex;
   justify-content:flex-start;
@@ -30,13 +24,9 @@ body{
   position:relative;
   z-index:1000;
 }
+.burger{font-size:26px;cursor:pointer;}
 
-.burger{
-  font-size:26px;
-  cursor:pointer;
-}
-
-/* ====== Burger Menu (Overlay فوق كل شي) ====== */
+/* ===== Burger Menu Overlay ===== */
 .menu-overlay{
   position:fixed;
   inset:0;
@@ -44,7 +34,6 @@ body{
   display:none;
   z-index:9998;
 }
-
 .menu{
   position:fixed;
   top:70px;
@@ -56,7 +45,6 @@ body{
   display:none;
   z-index:9999;
 }
-
 .menu button{
   width:100%;
   padding:14px;
@@ -67,12 +55,11 @@ body{
   text-align:right;
   font-size:14px;
 }
-
 .menu button:hover{
   background:rgba(255,255,255,.15);
 }
 
-/* ====== Profile Card ====== */
+/* ===== Profile Card ===== */
 .profile-card{
   margin:20px;
   padding:25px;
@@ -81,7 +68,6 @@ body{
   backdrop-filter:blur(15px);
   text-align:center;
 }
-
 .avatar img{
   width:120px;
   height:120px;
@@ -89,33 +75,29 @@ body{
   object-fit:cover;
   border:4px solid #fff;
 }
-
 .email{
   opacity:.8;
   margin:10px 0 20px;
 }
 
-/* ====== Stats ====== */
+/* ===== Stats ===== */
 .stats{
   display:flex;
   justify-content:space-around;
   margin:20px 0;
 }
-
 .stats div span{
   font-size:22px;
   font-weight:bold;
   display:block;
 }
+.stats small{opacity:.8;}
 
-.stats small{opacity:.8}
-
-/* ====== Progress ====== */
+/* ===== Progress ===== */
 .progress-box{
   margin-top:20px;
   text-align:right;
 }
-
 .progress{
   width:100%;
   height:12px;
@@ -124,7 +106,6 @@ body{
   overflow:hidden;
   margin-top:8px;
 }
-
 .progress-fill{
   height:100%;
   width:0%;
@@ -132,10 +113,9 @@ body{
   transition:.7s;
 }
 
-/* ====== Products ====== */
+/* ===== Products ===== */
 .products{margin:20px}
 .products h3{margin-bottom:10px}
-
 .product{
   display:flex;
   gap:12px;
@@ -146,17 +126,14 @@ body{
   align-items:center;
   justify-content:space-between;
 }
-
 .product img{
   width:60px;
   height:60px;
   border-radius:10px;
   object-fit:cover;
 }
-
 .product-details h4{margin-bottom:4px}
 .product-details p{margin:0}
-
 .delete-btn{
   background:#ff4d4d;
   color:#fff;
@@ -166,14 +143,14 @@ body{
   cursor:pointer;
 }
 
-/* ====== Empty ====== */
+/* ===== Empty ===== */
 .empty{
   opacity:.7;
   text-align:center;
   margin-top:15px;
 }
 
-/* ====== Modal ====== */
+/* ===== Modal ===== */
 #deleteModal{
   position:fixed;
   inset:0;
@@ -183,7 +160,6 @@ body{
   background:rgba(0,0,0,.5);
   z-index:9997;
 }
-
 #deleteModal .modal-content{
   background:#fff;
   color:#000;
@@ -191,7 +167,6 @@ body{
   border-radius:15px;
   text-align:center;
 }
-
 #deleteModal button{
   padding:8px 15px;
   border:none;
@@ -202,7 +177,7 @@ body{
 .yes{background:#ff4d4d;color:#fff}
 .no{background:#2ecc71;color:#fff}
 
-/* ====== Bottom Bar (لم يُمس) ====== */
+/* ===== Bottom Bar ===== */
 .bottom-bar{
   position:fixed;
   bottom:0;
@@ -278,87 +253,62 @@ body{
 </div>
 
 <script>
-const STORE_KEY="APP_PRODUCTS";
+// ====== Firebase Init ======
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-/* ====== Store ====== */
-function loadStore(){
-  const data=JSON.parse(localStorage.getItem(STORE_KEY));
-  if(!data) return {
-    profile:{
-      avatar:"https://i.imgur.com/6VBx3io.png",
-      name:"اسم المستخدم"
-    },
-    products:[]
-  };
-  return data;
-}
-function saveStore(data){
-  localStorage.setItem(STORE_KEY,JSON.stringify(data));
-}
-const store=loadStore();
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_SENDER",
+  appId: "YOUR_APP_ID"
+};
 
-/* ====== Menu ====== */
-function toggleMenu(){
-  document.getElementById("menu").style.display="block";
-  document.getElementById("menuOverlay").style.display="block";
-}
-function closeMenu(){
-  document.getElementById("menu").style.display="none";
-  document.getElementById("menuOverlay").style.display="none";
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-/* ====== Profile ====== */
+// ====== Menu ======
+function toggleMenu(){document.getElementById("menu").style.display="block";document.getElementById("menuOverlay").style.display="block";}
+function closeMenu(){document.getElementById("menu").style.display="none";document.getElementById("menuOverlay").style.display="none";}
+
+// ====== Profile ======
 const profileImg=document.getElementById("profileImg");
 const username=document.getElementById("username");
-
-profileImg.src=store.profile.avatar;
-username.textContent=store.profile.name;
-
-/* ====== Edit Image ====== */
-function changeImage(){
-  closeMenu();
-  document.getElementById("imgInput").click();
-}
-document.getElementById("imgInput").addEventListener("change",e=>{
-  const file=e.target.files[0];
-  if(!file) return;
-  const reader=new FileReader();
-  reader.onload=()=>{
-    store.profile.avatar=reader.result;
-    saveStore(store);
-    profileImg.src=reader.result;
-  };
-  reader.readAsDataURL(file);
-});
-
-/* ====== Edit Name ====== */
-function editName(){
-  closeMenu();
-  const newName=prompt("أدخل الاسم الجديد",store.profile.name);
-  if(!newName) return;
-  store.profile.name=newName;
-  saveStore(store);
-  username.textContent=newName;
-}
-
-/* ====== Logout ====== */
-function logout(){
-  closeMenu();
-  alert("تم تسجيل الخروج");
-}
-
-/* ====== Products ====== */
 const productsContainer=document.getElementById("productsContainer");
 const productsCount=document.getElementById("products");
 const salesSpan=document.getElementById("sales");
 const progressFill=document.getElementById("progressFill");
+const deleteModal=document.getElementById("deleteModal");
+const confirmDeleteBtn=document.getElementById("confirmDelete");
 
-let selectedProductId=null;
+let currentUser = null;
+let selectedProductId = null;
 
-function displayProducts(){
+// ====== تحقق تسجيل الدخول ======
+onAuthStateChanged(auth, user=>{
+  if(!user){
+    alert("يجب تسجيل الدخول أولاً");
+    window.location.href="login.html";
+    return;
+  }
+  currentUser = user;
+  username.textContent = user.email;
+  profileImg.src = "https://i.imgur.com/6VBx3io.png"; // يمكن ربطها بالصورة الحقيقية إذا خزنت في Firestore
+  displayProducts();
+});
+
+// ====== عرض المنتجات الخاصة بالمستخدم ======
+async function displayProducts(){
   productsContainer.innerHTML="";
-  let total=0;
-  const products=store.products.filter(p=>p.owner==="user123");
+  let total = 0;
+  const q = query(collection(db,"products"), where("owner","==",currentUser.uid));
+  const querySnapshot = await getDocs(q);
+  const products = [];
+  querySnapshot.forEach(docSnap=>{products.push({...docSnap.data(), id:docSnap.id});});
 
   if(products.length===0){
     productsContainer.innerHTML="<p class='empty'>لا يوجد منتجات بعد</p>";
@@ -374,36 +324,33 @@ function displayProducts(){
         <h4>${p.name}</h4>
         <p>السعر: ${p.price}$</p>
       </div>
-      <button class="delete-btn" onclick="openDeleteModal(${p.id})">حذف</button>
+      <button class="delete-btn" onclick="openDeleteModal('${p.id}')">حذف</button>
     `;
     productsContainer.appendChild(div);
   });
 
-  productsCount.textContent=products.length;
-  salesSpan.textContent=total+"$";
-  progressFill.style.width=Math.min(total,100)+"%";
+  productsCount.textContent = products.length;
+  salesSpan.textContent = total+"$";
+  progressFill.style.width = Math.min(total,100)+"%";
 }
 
-/* ====== Delete ====== */
-const deleteModal=document.getElementById("deleteModal");
-const confirmDeleteBtn=document.getElementById("confirmDelete");
-
-function openDeleteModal(id){
-  selectedProductId=id;
-  deleteModal.style.display="flex";
-}
-function closeDeleteModal(){
-  deleteModal.style.display="none";
-  selectedProductId=null;
-}
-confirmDeleteBtn.onclick=()=>{
-  store.products=store.products.filter(p=>p.id!==selectedProductId);
-  saveStore(store);
+// ====== حذف المنتجات ======
+function openDeleteModal(id){selectedProductId=id;deleteModal.style.display="flex";}
+function closeDeleteModal(){deleteModal.style.display="none";selectedProductId=null;}
+confirmDeleteBtn.onclick=async()=>{
+  if(!selectedProductId) return;
+  await deleteDoc(doc(db,"products",selectedProductId));
   displayProducts();
   closeDeleteModal();
 };
 
-displayProducts();
+// ====== Logout ======
+function logout(){signOut(auth).then(()=>{window.location.href="login.html";}).catch(console.error);}
+
+// ====== تعديل الصورة والاسم ======
+function changeImage(){closeMenu();alert("ميزة تعديل الصورة لم تُدمج بعد مع Firebase");}
+function editName(){closeMenu();alert("ميزة تعديل الاسم لم تُدمج بعد مع Firebase");}
+
 </script>
 
 </body>
