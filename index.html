@@ -7,204 +7,83 @@
 
 <style>
 /* ================= RESET ================= */
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Tahoma, Arial;
-}
-
-/* ================= BASIC SECURITY ================= */
-body{
-  -webkit-user-select:none;
-  -moz-user-select:none;
-  -ms-user-select:none;
-  user-select:none;
-}
-
-/* نسمح بالتفاعل فقط للأزرار والبحث */
-button,input,a{
-  user-select:auto;
-}
-
-/* منع سحب الصور فقط */
-img{
-  -webkit-user-drag:none;
-  -webkit-touch-callout:none;
-  user-select:none;
-}
-
-/* ================= BODY ================= */
-body{
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:#fff;
-  padding-bottom:90px;
-}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma, Arial,sans-serif;}
+body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
+button,input,a{user-select:auto;}
+img{-webkit-user-drag:none;-webkit-touch-callout:none;user-select:none;}
+body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:#fff;padding-bottom:90px;}
 
 /* ================= HEADER ================= */
 header.top{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  display:flex;
-  align-items:center;
-  gap:12px;
+  position:sticky;top:0;z-index:1000;
+  display:flex;align-items:center;gap:12px;
   padding:15px 18px;
   background:rgba(255,255,255,.12);
   backdrop-filter:blur(12px);
   border-bottom:1px solid rgba(255,255,255,.2);
 }
-
-header.top img.logo{
-  width:40px;
-  height:40px;
-  border-radius:10px;
-}
-
-header.top h1{
-  font-size:18px;
-  flex:1;
-}
-
+header.top img.logo{width:40px;height:40px;border-radius:10px;}
+header.top h1{font-size:18px;flex:1;}
 header.top input{
-  width:100%;
-  padding:9px 14px;
-  border-radius:14px;
-  border:none;
-  outline:none;
-  background:rgba(255,255,255,.18);
-  color:#fff;
+  width:100%;padding:9px 14px;border-radius:14px;border:none;outline:none;
+  background:rgba(255,255,255,.18);color:#fff;
 }
-
-header.top input::placeholder{
-  color:rgba(255,255,255,.7);
+header.top input::placeholder{color:rgba(255,255,255,.7);}
+header.top button#loginBtn{
+  background:linear-gradient(90deg,#00ffcc,#00c3ff);
+  border:none;padding:6px 14px;border-radius:14px;
+  cursor:pointer;font-size:12px;margin-left:10px;color:#000;
+}
+header.top button#loginBtn:hover{
+  opacity:0.9;transform:scale(1.05);transition:.3s;
 }
 
 /* ================= CONTAINER ================= */
-section.container{
-  padding:15px;
-}
+section.container{padding:15px;min-height:calc(100vh - 120px);display:flex;flex-direction:column;}
 
 /* ================= ROW HEADER ================= */
-.row-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-}
-
-.row-header h3{
-  font-size:18px;
-}
-
+.row-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.row-header h3{font-size:18px;}
 .row-header button{
-  background:linear-gradient(90deg,#00ffcc,#00c3ff);
-  color:#000;
-  border:none;
-  padding:6px 14px;
-  border-radius:14px;
-  font-size:12px;
-  cursor:pointer;
+  background:linear-gradient(90deg,#00ffcc,#00c3ff);color:#000;border:none;
+  padding:6px 14px;border-radius:14px;font-size:12px;cursor:pointer;
 }
 
 /* ================= HORIZONTAL GRID ================= */
 .horizontal-grid{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  padding-bottom:10px;
-  cursor:grab;
-  scroll-behavior:smooth;
+  display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;cursor:grab;scroll-behavior:smooth;
 }
-
 .horizontal-grid::-webkit-scrollbar{display:none;}
 .horizontal-grid:active{cursor:grabbing;}
 
 /* ================= GRID ================= */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-  gap:14px;
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
 
 /* ================= CARD ================= */
 .card{
-  background:rgba(255,255,255,.18);
-  backdrop-filter:blur(16px);
-  border-radius:18px;
-  padding:10px;
-  cursor:pointer;
-  transition:.3s;
-  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  background:rgba(255,255,255,.18);backdrop-filter:blur(16px);
+  border-radius:18px;padding:10px;cursor:pointer;transition:.3s;box-shadow:0 10px 30px rgba(0,0,0,.25);
   min-width:150px;
 }
-
-.card:hover{
-  transform:translateY(-6px) scale(1.03);
-}
-
-.card img{
-  width:100%;
-  height:110px;
-  object-fit:cover;
-  border-radius:14px;
-  margin-bottom:8px;
-}
-
-.card h4{
-  font-size:14px;
-  margin-bottom:4px;
-}
-
-.card p{
-  font-size:12px;
-  color:rgba(255,255,255,.8);
-  margin-bottom:6px;
-}
-
-.price{
-  font-weight:bold;
-  color:#00ffcc;
-}
+.card:hover{transform:translateY(-6px) scale(1.03);}
+.card img{width:100%;height:110px;object-fit:cover;border-radius:14px;margin-bottom:8px;}
+.card h4{font-size:14px;margin-bottom:4px;}
+.card p{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:6px;}
+.price{font-weight:bold;color:#00ffcc;}
 
 /* ================= ROW SECTIONS ================= */
-.row-codes,
-.row-images,
-.row-programs{
-  padding:12px;
-  border-radius:20px;
-  margin-bottom:18px;
-  background:rgba(255,255,255,.08);
-}
+.row-codes,.row-images,.row-programs{padding:12px;border-radius:20px;margin-bottom:18px;background:rgba(255,255,255,.08);}
 
 /* ================= BOTTOM NAV ================= */
 nav.bottom{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(12px);
-  display:flex;
-  justify-content:space-around;
-  padding:7px 0;
-  z-index:1000;
+  position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.15);
+  backdrop-filter:blur(12px);display:flex;justify-content:space-around;padding:7px 0;z-index:1000;
 }
+nav.bottom a{text-decoration:none;font-size:18px;color:#fff;opacity:.85;transition:.3s;}
+nav.bottom a:hover{opacity:1;transform:scale(1.15);}
 
-
-
-nav.bottom a{
-  text-decoration:none;
-  font-size:18px;
-  color:#fff;
-  opacity:.85;
-  transition:.3s;
-}
-
-nav.bottom a:hover{
-  opacity:1;
-  transform:scale(1.15);
-}
+/* ================= NO RESULTS ================= */
+.no-results{text-align:center;font-size:24px;color:#ff5555;margin:auto;flex:1;display:flex;justify-content:center;align-items:center;}
 </style>
 </head>
 
@@ -214,6 +93,7 @@ nav.bottom a:hover{
   <img class="logo" src="Screenshot 2025-04-22 090937.png">
   <h1>تطبيقك الرقمي</h1>
   <input id="search" type="search" placeholder="ابحث عن منتج رقمي..." oninput="searchProducts()">
+  <button id="loginBtn" onclick="location.href='auth.html'">تسجيل دخول</button>
 </header>
 
 <section class="container" id="productContainer"></section>
@@ -225,63 +105,33 @@ nav.bottom a:hover{
   <a href="profile.html">👤</a>
 </nav>
 
-<script>
-/* ================= BASIC JS SECURITY ================= */
-document.addEventListener("contextmenu", e => e.preventDefault());
+<script type="module">
+// ===== Firebase Init =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-document.addEventListener("keydown", e => {
-  if (
-    e.key === "F12" ||
-    (e.ctrlKey && ["c","u","s"].includes(e.key.toLowerCase()))
-  ) {
-    e.preventDefault();
-  }
-});
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_SENDER",
+  appId: "YOUR_APP_ID"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const products = [
-  {id:1,  name:"قالب صفحة شخصية", desc:"تصميم عصري متجاوب", img:"https://picsum.photos/300?1",  category:"codes",    price:10},
-  {id:2,  name:"قالب متجر إلكتروني", desc:"متجر كامل HTML/CSS", img:"https://picsum.photos/300?2",  category:"codes",    price:30},
-  {id:3,  name:"قالب لوحة تحكم", desc:"Dashboard احترافي", img:"https://picsum.photos/300?3",  category:"codes",    price:25},
-  {id:4,  name:"قالب مدونة", desc:"مدونة عصرية وسريعة", img:"https://picsum.photos/300?4",  category:"codes",    price:15},
-  {id:5,  name:"قالب هبوط", desc:"Landing Page تسويقية", img:"https://picsum.photos/300?5",  category:"codes",    price:12},
-  {id:6,  name:"نظام تسجيل دخول", desc:"Login & Register جاهز", img:"https://picsum.photos/300?6",  category:"codes",    price:18},
-  {id:7,  name:"API مصغر", desc:"Backend خفيف للمبتدئين", img:"https://picsum.photos/300?7",  category:"codes",    price:20},
-  {id:8,  name:"قالب بورتفوليو", desc:"عرض أعمال شخصي", img:"https://picsum.photos/300?8",  category:"codes",    price:14},
-  {id:9,  name:"قالب شركة", desc:"موقع شركات احترافي", img:"https://picsum.photos/300?9",  category:"codes",    price:22},
-  {id:10, name:"قالب تطبيق", desc:"واجهة تطبيق ويب", img:"https://picsum.photos/300?10", category:"codes",    price:16},
+const container = document.getElementById("productContainer");
+let products = [];
 
-  {id:11, name:"لوغو احترافي", desc:"تصميم شعار عالي الجودة", img:"https://picsum.photos/300?11", category:"images",   price:20},
-  {id:12, name:"باقة أيقونات", desc:"أيقونات UI جاهزة", img:"https://picsum.photos/300?12", category:"images",   price:12},
-  {id:13, name:"صور تسويقية", desc:"باقة إعلانات", img:"https://picsum.photos/300?13", category:"images",   price:15},
-  {id:14, name:"خلفيات ويب", desc:"خلفيات مواقع عصرية", img:"https://picsum.photos/300?14", category:"images",   price:10},
-  {id:15, name:"تصميم بنرات", desc:"بنرات احترافية", img:"https://picsum.photos/300?15", category:"images",   price:18},
-  {id:16, name:"صور سوشيال", desc:"قوالب إنستغرام", img:"https://picsum.photos/300?16", category:"images",   price:14},
-  {id:17, name:"موكاب UI", desc:"Mockups للتطبيقات", img:"https://picsum.photos/300?17", category:"images",   price:22},
-  {id:18, name:"قوالب بوستات", desc:"بوستات جاهزة", img:"https://picsum.photos/300?18", category:"images",   price:9},
-  {id:19, name:"صور منتجات", desc:"تصوير منتجات", img:"https://picsum.photos/300?19", category:"images",   price:25},
-  {id:20, name:"خلفيات موبايل", desc:"خلفيات عالية الدقة", img:"https://picsum.photos/300?20", category:"images",   price:8},
-
-  {id:21, name:"دورة HTML", desc:"تعلم HTML من الصفر", img:"https://picsum.photos/300?21", category:"programs", price:20},
-  {id:22, name:"دورة CSS", desc:"احتراف CSS عمليًا", img:"https://picsum.photos/300?22", category:"programs", price:22},
-  {id:23, name:"دورة JavaScript", desc:"أساسيات JS", img:"https://picsum.photos/300?23", category:"programs", price:30},
-  {id:24, name:"دورة Front-End", desc:"مسار كامل", img:"https://picsum.photos/300?24", category:"programs", price:45},
-  {id:25, name:"دورة تصميم UI", desc:"تصميم واجهات", img:"https://picsum.photos/300?25", category:"programs", price:28},
-  {id:26, name:"دورة برمجة ويب", desc:"مشاريع عملية", img:"https://picsum.photos/300?26", category:"programs", price:35},
-  {id:27, name:"دورة فلاتر", desc:"تطوير تطبيقات موبايل", img:"https://picsum.photos/300?27", category:"programs", price:40},
-  {id:28, name:"دورة ووردبريس", desc:"إنشاء مواقع بسهولة", img:"https://picsum.photos/300?28", category:"programs", price:18},
-  {id:29, name:"دورة UX", desc:"تجربة المستخدم", img:"https://picsum.photos/300?29", category:"programs", price:26},
-  {id:30, name:"دورة Git", desc:"إدارة الأكواد", img:"https://picsum.photos/300?30", category:"programs", price:15}
-];
-
+// ===== Categories =====
 const categories = {
   codes:{title:"أكواد",class:"row-codes"},
   images:{title:"صور",class:"row-images"},
   programs:{title:"برامج",class:"row-programs"}
 };
 
-const container = document.getElementById("productContainer");
-
-/* ================= DISPLAY ================= */
+// ===== Display Rows =====
 function displayRows(list){
   container.innerHTML="";
   for(const cat in categories){
@@ -304,12 +154,13 @@ function displayRows(list){
   enableDragScroll();
 }
 
+// ===== Create Card =====
 function createCard(p){
   const card=document.createElement("div");
   card.className="card";
   card.onclick=()=>location.href=`product.html?id=${p.id}`;
   card.innerHTML=`
-    <img src="${p.img}">
+    <img src="${p.image}">
     <h4>${p.name}</h4>
     <p>${p.desc}</p>
     <div class="price">${p.price}$</div>
@@ -317,32 +168,33 @@ function createCard(p){
   return card;
 }
 
+// ===== Search Products =====
 function searchProducts(){
   const q=document.getElementById("search").value.toLowerCase();
-  if(!q){displayRows(products);return;}
+  if(!q){displayRows(products); return;}
+  const filtered = products.filter(p=>p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q));
+  
   container.innerHTML='<div class="grid"></div>';
   const grid=container.querySelector(".grid");
-  products
-    .filter(p=>p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q))
-    .forEach(p=>grid.appendChild(createCard(p)));
+  if(filtered.length === 0){
+    container.innerHTML=`<div class="no-results">لا توجد منتجات مطابقة لبحثك</div>`;
+    return;
+  }
+  filtered.forEach(p=>grid.appendChild(createCard(p)));
 }
 
+// ===== View All Category =====
 function viewAll(cat){
   container.innerHTML='<div class="grid"></div>';
   const grid=container.querySelector(".grid");
-  products.filter(p=>p.category===cat)
-    .forEach(p=>grid.appendChild(createCard(p)));
+  products.filter(p=>p.category===cat).forEach(p=>grid.appendChild(createCard(p)));
 }
 
-/* ================= DRAG SCROLL ================= */
+// ===== Enable Drag Scroll =====
 function enableDragScroll(){
   document.querySelectorAll(".horizontal-grid").forEach(slider=>{
     let isDown=false,startX,scrollLeft;
-    slider.addEventListener("mousedown",e=>{
-      isDown=true;
-      startX=e.pageX-slider.offsetLeft;
-      scrollLeft=slider.scrollLeft;
-    });
+    slider.addEventListener("mousedown",e=>{isDown=true;startX=e.pageX-slider.offsetLeft;scrollLeft=slider.scrollLeft;});
     slider.addEventListener("mouseup",()=>isDown=false);
     slider.addEventListener("mouseleave",()=>isDown=false);
     slider.addEventListener("mousemove",e=>{
@@ -354,8 +206,17 @@ function enableDragScroll(){
   });
 }
 
-/* INIT */
-displayRows(products);
+// ===== Load Products from Firestore =====
+async function loadProducts(){
+  const querySnapshot = await getDocs(collection(db,"products"));
+  products = [];
+  querySnapshot.forEach(docSnap=>{
+    products.push({...docSnap.data(), id:docSnap.id});
+  });
+  displayRows(products);
+}
+
+loadProducts();
 </script>
 
 </body>
