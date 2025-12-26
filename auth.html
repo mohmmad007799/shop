@@ -4,28 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تسجيل الدخول / إنشاء حساب</title>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma, Arial,sans-serif;}
-body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;justify-content:center;align-items:center;height:100vh;color:#fff;}
+body{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:#fff;
+}
 
 .container{
   background:rgba(255,255,255,.1);
   padding:30px;
   border-radius:20px;
-  width:300px;
+  width:320px;
   backdrop-filter:blur(10px);
   text-align:center;
 }
 
 h2{margin-bottom:20px;color:#00ffcc;}
 
+.field{
+  position:relative;
+}
+
 input{
   width:100%;
-  padding:10px;
+  padding:10px 40px 10px 10px;
   margin:8px 0;
   border-radius:8px;
   border:none;
   outline:none;
+}
+
+.eye{
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:18px;
+  color:#555;
 }
 
 button{
@@ -38,9 +60,8 @@ button{
   background:#00ffcc;
   color:#000;
   font-weight:bold;
-  transition:.2s;
+  transition: .2s;
 }
-
 button:hover{background:#00c3ff;}
 
 .toggle{
@@ -50,107 +71,109 @@ button:hover{background:#00c3ff;}
   text-decoration:underline;
   font-size:14px;
 }
-.error{color:#ff4d4d;font-size:13px;margin-top:5px;}
+
+.error{color:#ff4d4d;font-size:13px;margin-top:8px;}
+.success{color:#2ecc71;font-size:13px;margin-top:8px;}
 </style>
 </head>
 
 <body>
-<div class="container" id="authContainer">
+
+<div class="container">
   <h2 id="formTitle">تسجيل الدخول</h2>
+  <div id="msg"></div>
 
-  <div id="formError" class="error"></div>
+  <input type="email" id="email" placeholder="البريد الإلكتروني">
 
-  <input type="text" id="username" placeholder="اسم المستخدم" required>
-  <input type="email" id="email" placeholder="البريد الإلكتروني" required style="display:none;">
-  <input type="password" id="password" placeholder="كلمة المرور" required>
+  <div class="field">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <span class="eye" onclick="togglePass('password')">👁</span>
+  </div>
+
+  <div class="field" id="confirmField" style="display:none">
+    <input type="password" id="confirmPassword" placeholder="تأكيد كلمة المرور">
+    <span class="eye" onclick="togglePass('confirmPassword')">👁</span>
+  </div>
 
   <button id="submitBtn">تسجيل الدخول</button>
   <div class="toggle" id="toggleForm">ليس لديك حساب؟ إنشاء حساب</div>
 </div>
 
-<script>
-// ---------- المخزن ----------
-const USERS_KEY = "APP_USERS";
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// ---------- DOM ----------
-const authContainer = document.getElementById("authContainer");
+// ================= إعدادات مشروع Firebase =================
+const firebaseConfig = {
+  apiKey: "AIzaSyCmArZk0HDaTyIYWCvo4qUUs6wtbOug5fs",
+  authDomain: "shop-65260.firebaseapp.com",
+  projectId: "shop-65260",
+  storageBucket: "shop-65260.appspot.com",
+  messagingSenderId: "828188332596",
+  appId: "1:828188332596:web:9727077b8210a7e63a3061",
+  measurementId: "G-560CHRLKRQ"
+};
+
+// ================= تهيئة Firebase =================
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// ================= DOM =================
+const msg = document.getElementById("msg");
 const formTitle = document.getElementById("formTitle");
 const toggleForm = document.getElementById("toggleForm");
 const submitBtn = document.getElementById("submitBtn");
-const formError = document.getElementById("formError");
-
+const confirmField = document.getElementById("confirmField");
 let isLogin = true;
 
-// ---------- وظائف المخزن ----------
-function loadUsers() {
-  return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+// ================= وظائف =================
+function showError(text){ msg.className="error"; msg.textContent=text; }
+function showSuccess(text){ msg.className="success"; msg.textContent=text; }
+function togglePass(id){
+  const i=document.getElementById(id);
+  i.type=i.type==="password"?"text":"password";
 }
 
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-function addUser(user){
-  const users = loadUsers();
-  users.push(user);
-  saveUsers(users);
-}
-
-// ---------- تبديل بين تسجيل الدخول وإنشاء حساب ----------
-toggleForm.addEventListener("click", ()=>{
+// تبديل بين تسجيل الدخول وإنشاء الحساب
+toggleForm.onclick = ()=>{
   isLogin = !isLogin;
-  formError.textContent = "";
-  if(isLogin){
-    formTitle.textContent = "تسجيل الدخول";
-    submitBtn.textContent = "تسجيل الدخول";
-    toggleForm.textContent = "ليس لديك حساب؟ إنشاء حساب";
-    document.getElementById("email").style.display = "none";
-  } else {
-    formTitle.textContent = "إنشاء حساب";
-    submitBtn.textContent = "إنشاء حساب";
-    toggleForm.textContent = "لديك حساب؟ تسجيل الدخول";
-    document.getElementById("email").style.display = "block";
-  }
-});
+  msg.textContent="";
+  confirmField.style.display = isLogin?"none":"block";
+  formTitle.textContent = isLogin?"تسجيل الدخول":"إنشاء حساب";
+  submitBtn.textContent = formTitle.textContent;
+  toggleForm.textContent = isLogin?"ليس لديك حساب؟ إنشاء حساب":"لديك حساب؟ تسجيل الدخول";
+}
 
-// ---------- تحقق من البيانات ----------
-submitBtn.addEventListener("click", ()=>{
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+// عند الضغط على زر إرسال
+submitBtn.onclick = async ()=>{
   const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const confirmPassword = document.getElementById("confirmPassword")?.value.trim();
 
-  if(!username || !password || (!isLogin && !email)){
-    formError.textContent = "الرجاء ملء جميع الحقول";
-    return;
+  if(!email || !password || (!isLogin && !confirmPassword)){
+    return showError("الرجاء ملء جميع الحقول");
   }
 
-  const users = loadUsers();
-
-  if(isLogin){
-    const user = users.find(u=>u.username === username && u.password === password);
-    if(user){
-      localStorage.setItem("CURRENT_USER", JSON.stringify(user));
-      formError.textContent = "";
-      alert("تم تسجيل الدخول بنجاح!");
-      // هنا يمكنك إعادة التوجيه للصفحة الرئيسية
-      // window.location.href = "profile.html";
+  try {
+    if(isLogin){
+      // تسجيل الدخول
+      await signInWithEmailAndPassword(auth, email, password);
+      showSuccess("تم تسجيل الدخول ✔");
+      setTimeout(()=>location.href="index.html",1000);
     } else {
-      formError.textContent = "اسم المستخدم أو كلمة المرور غير صحيحة";
+      // إنشاء حساب
+      if(password !== confirmPassword) return showError("كلمتا المرور غير متطابقتين");
+      if(password.length < 8) return showError("كلمة المرور ضعيفة (8 أحرف على الأقل)");
+
+      await createUserWithEmailAndPassword(auth, email, password);
+      showSuccess("تم إنشاء الحساب 🎉");
+      setTimeout(()=>location.href="index.html",1000);
     }
-  } else {
-    if(users.find(u=>u.username===username)){
-      formError.textContent = "اسم المستخدم موجود مسبقًا";
-      return;
-    }
-    const newUser = {id:Date.now(), username, email, password};
-    addUser(newUser);
-    localStorage.setItem("CURRENT_USER", JSON.stringify(newUser));
-    formError.textContent = "";
-    alert("تم إنشاء الحساب بنجاح!");
-    // إعادة التوجيه للملف الشخصي
-    // window.location.href = "profile.html";
+  } catch (error) {
+    showError(error.message);
   }
-});
+}
 </script>
 
 </body>
